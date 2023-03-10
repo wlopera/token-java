@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>JWT-login</title>
+	<link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<div th:switch="${customers}" class="container">
+	<div>
+		<form action="#" th:action="@{/login}" th:object="${user}" method="post" class="form">
+			<label for="name">Nombre</label>
+			<input type="text" th:field="*{name}" id="name" placeholder="Nombre">
+			<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+
+			<label for="password">Clave</label>
+			<input type="password" th:field="*{password}" id="name" placeholder="Clave">
+			<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+
+			<input type="submit" value="Conectarse">
+		</form>
+	</div>
+</div>
+
+</html>

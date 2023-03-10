@@ -1,0 +1,17 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>JWT-login</title>
+	<link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<div th:switch="${user}" class="container">
+	<div>
+		<form class="form">
+			<p>Cliente Conectado: <span th:text="${user.name}"></span>
+			<p>Token: <span th:text="${user.token}"></span>
+		</form>
+	</div>
+</div>
+
+</html>
