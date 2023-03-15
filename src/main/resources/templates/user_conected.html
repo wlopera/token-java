@@ -9,9 +9,31 @@
 	<div>
 		<form class="form">
 			<p>Cliente Conectado: <span th:text="${user.name}"></span>
-			<p>Token: <span th:text="${user.token}"></span>
+			<p>Token: <span id="token" th:text="${user.token}"></span>
+			<p><input type="button" onclick="getData( )" value="Get Data" /></p>
 		</form>
 	</div>
+	<div id="showresults">Salida</div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	const getData = () => {
+		console.log("LLamada a funcion por boton: " + $("#token").text());
+		$.ajax({
+			type: "GET",
+			headers: {"Authorization": $("#token").text()},
+			url: "/data",
+			success: function (data) {
+				console.log("SUCCESS : ", data);
+				$('#showresults').html(data);
+			},
+			error: function (e) {
+				console.log("ERROR : ", e);
+			}
+		});
+	}
+
+</script>
 
 </html>

@@ -29,16 +29,22 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 		try {
+			System.out.println("doFilterInternal - Authoratation: " + HEADER);
 			if (existeJWTToken(request, response)) {
 				Claims claims = validateToken(request);
 				if (claims.get("authorities") != null) {
+					System.out.println("doFilterInternal - claims.get(authorities) : " + claims.get("authorities") );
 					setUpSpringAuthentication(claims);
 				} else {
 					SecurityContextHolder.clearContext();
 				}
 			} else {
 				SecurityContextHolder.clearContext();
-			}
+			}			
+			System.out.println("SecurityContextHolder.getContext(): " + SecurityContextHolder.getContext());
+			System.out.println("doFilterInternal - doFilter request: " + request.getLocalName());
+			System.out.println("doFilterInternal - doFilter - response: " + response.getStatus());
+
 			chain.doFilter(request, response);
 		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -49,6 +55,9 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
 	private Claims validateToken(HttpServletRequest request) {
 		String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
+		System.out.println("validateToken - jwtToken: " + jwtToken);
+		System.out.println("validateToken - claims: " +  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody());
+		
 		return Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 	}
 
@@ -60,6 +69,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 	private void setUpSpringAuthentication(Claims claims) {
 		@SuppressWarnings("unchecked")
 		List<String> authorities = (List<String>) claims.get("authorities");
+		
+		System.out.println("setUpSpringAuthentication: " + authorities);
 
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
 				authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
@@ -69,6 +80,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
 	private boolean existeJWTToken(HttpServletRequest request, HttpServletResponse res) {
 		String authenticationHeader = request.getHeader(HEADER);
+		System.out.println("existeJWTToken: " + authenticationHeader);
 		if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
 			return false;
 		return true;

@@ -1,0 +1,25 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>JWT-data</title>
+	<link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<div th:switch="${data}" class="container">
+	<div>
+		<form action="#" class="form">
+			<fieldset>
+				<legend>Lista de Datos</legend>
+				<hr />
+				<ul>
+					<li th:each="mapEntry: ${data}">
+						<span th:text="${mapEntry.key}"></span> : <span th:text="${mapEntry.value}"></span>
+					</li>
+				</ul>
+		</form>
+		</fieldset>
+		</form>
+	</div>
+</div>
+
+</html>

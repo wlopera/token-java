@@ -5,7 +5,7 @@
 	<title>JWT-login</title>
 	<link th:href="@{/styles/style.css}" rel="stylesheet" />
 </head>
-<div th:switch="${customers}" class="container">
+<div class="container">
 	<div>
 		<form action="#" th:action="@{/login}" th:object="${user}" method="post" class="form">
 			<label for="name">Nombre</label>
