@@ -339,6 +339,7 @@ public class TokenController {
 
 </html>
 ```
+
 ## Salida 
  * Levantar servidor.
 
@@ -353,4 +354,99 @@ public class TokenController {
 * Probar token
 
 ![Captura2](https://user-images.githubusercontent.com/7141537/224443362-e2e1f85b-7137-4fce-9def-4544441d7f87.PNG)
+
+
+### data.html
+```
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>JWT-data</title>
+	<link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<div th:switch="${data}" class="container">
+	<div>
+		<form action="#" class="form">
+			<fieldset>
+				<legend>Lista de Datos</legend>
+				<hr />
+				<ul>
+					<li th:each="mapEntry: ${data}">
+						<span th:text="${mapEntry.key}"></span> : <span th:text="${mapEntry.value}"></span>
+					</li>
+				</ul>
+		</form>
+		</fieldset>
+		</form>
+	</div>
+</div>
+</html>
+```
+
+### user_conected.html [Modificado]: Uso JQuery - Ajax
+```
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>JWT-login</title>
+	<link th:href="@{/styles/style.css}" rel="stylesheet" />
+</head>
+<div th:switch="${user}" class="container">
+	<div>
+		<form class="form">
+			<p>Cliente Conectado: <span th:text="${user.name}"></span>
+			<p>Token: <span id="token" th:text="${user.token}"></span>
+			<p><input type="button" onclick="getData( )" value="Datos" /></p>
+		</form>
+	</div>
+	<div id="showresults">Salida</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	const getData = () => {
+		console.log("LLamada a funcion por boton: " + $("#token").text());
+		$.ajax({
+			type: "GET",
+			headers: {"Authorization": $("#token").text()},
+			url: "/data",
+			success: function (data) {
+				console.log("SUCCESS : ", data);
+				$('#showresults').html(data);
+			},
+			error: function (e) {
+				console.log("ERROR : ", e);
+			}
+		});
+	}
+
+</script>
+
+</html>
+```
+
+### Agregar codigo al controlador
+```
+   ...
+	@GetMapping("/data")
+	public String getData(Model model) {
+		System.out.println("Consultar datos...");
+		
+		Map<String, String> data = new HashMap<>();
+		data.put("Pais", "Venezuela");
+		data.put("Capital", "Caracas");
+		data.put("Lenguaje", "Español");
+		data.put("Moneda", "Bolívar");
+		
+		model.addAttribute("data", data);
+		
+		return "data";
+	}
+   ...
+```
+
+### Salida:
+![Captura](https://user-images.githubusercontent.com/7141537/225760098-fbe5b206-e89b-45cd-90a9-7574a7990b67.PNG)
 
